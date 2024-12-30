@@ -12,7 +12,8 @@ String createRuntimeDisplayValue(int? totalMinutes) {
 }
 
 String getYearFromDate(String dateString) {
-  DateTime dateTime = DateTime.parse(dateString);
+  DateTime? dateTime = DateTime.tryParse(dateString);
+  if(dateTime == null) return 'Unknown';
   int year = dateTime.year;
   return year.toString();
 }
