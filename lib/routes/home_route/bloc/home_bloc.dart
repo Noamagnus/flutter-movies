@@ -19,6 +19,45 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       }
     });
 
+    on<FetchTopRatedMovies>((event, emit) async {
+      emit(HomeLoadedTopRated.initial());
+      try {
+        final paginatedResponse = await tmdbService.fetchTopRatedMovies(page: 1);
+        emit(
+          HomeLoadedTopRated(
+            movies: paginatedResponse.items,
+            page: paginatedResponse.page,
+            hasReachedMax: paginatedResponse.totalPages == paginatedResponse.page,
+            isLoading: false,
+          ),
+        );
+      } catch (e) {
+        emit(HomeError(e.toString()));
+      }
+    });
+
+    on<FetchMoreTopRatedMovies>((event, emit) async {
+      final currentState = state;
+      if (currentState is HomeLoadedTopRated && !currentState.hasReachedMax) {
+        emit(currentState.copyWith(isLoading: true));
+        try {
+          final paginatedResponse = await tmdbService.fetchTopRatedMovies(page: currentState.page + 1);
+          emit(
+            currentState.copyWith(
+              movies: [...currentState.movies, ...paginatedResponse.items],
+              page: paginatedResponse.page,
+              hasReachedMax: paginatedResponse.totalPages == paginatedResponse.page,
+              isLoading: false,
+            ),
+          );
+        } catch (e) {
+          emit(HomeError(e.toString()));
+        }
+      }
+    });
+
+
+
     on<SearchMovies>((event, emit) async {
       emit(HomeLoading());
       try {

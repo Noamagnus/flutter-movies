@@ -9,6 +9,11 @@ class FetchPopularMovies extends HomeEvent {
   List<Object?> get props => [];
 }
 
+class FetchTopRatedMovies extends HomeEvent {
+  @override
+  List<Object?> get props => [];
+}
+
 class SearchMovies extends HomeEvent {
   final String query;
 
@@ -16,4 +21,9 @@ class SearchMovies extends HomeEvent {
 
   @override
   List<Object?> get props => [query];
+}
+
+class FetchMoreTopRatedMovies extends HomeEvent {
+  @override
+  List<Object?> get props => [];
 }
